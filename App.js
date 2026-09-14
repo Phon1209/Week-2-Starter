@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {
   ScrollView,
@@ -8,10 +7,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Pressable,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Pressable } from "react-native";
-import { useState } from "react";
 import {
   SafeAreaProvider,
   SafeAreaView,
@@ -44,7 +42,6 @@ const colors = {
     accent: "#FFCB05",
   },
 };
-
 
 function SuccessScreen() {
   return (
@@ -81,26 +78,15 @@ function FormScreen({ onNavigate }) {
 
   return (
     <ScrollView
-      style={[
-        styles.screen,
-        { backgroundColor: theme.background },
-      ]}
+      style={[styles.screen, { backgroundColor: theme.background }]}
       contentContainerStyle={styles.container}
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.titleRow}>
         <View style={styles.titleContainer}>
-          <Text style={[styles.title, { color: theme.text }]}>
-            Contact Us
-            
-          </Text>
+          <Text style={[styles.title, { color: theme.text }]}>Contact Us</Text>
 
-          <Text
-            style={[
-              styles.subtitle,
-              { color: theme.secondaryText },
-            ]}
-          >
+          <Text style={[styles.subtitle, { color: theme.secondaryText }]}>
             Please enter personal information and inquiry about a subject.
           </Text>
         </View>
@@ -124,28 +110,12 @@ function FormScreen({ onNavigate }) {
       </View>
 
       {/* Name input example */}
-      <View
-        style={[
-          styles.card,
-          { backgroundColor: theme.surface },
-        ]}
-      >
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>
-          Who are you?
-        </Text>
-
-        <Text
-          style={[
-            styles.description,
-            { color: theme.secondaryText },
-          ]}
-        >
+      <View style={[styles.card, { backgroundColor: theme.surface }]}>
+        <Text style={[styles.description, { color: theme.secondaryText }]}>
           Please enter Name and Uniqname
         </Text>
 
-        <Text style={[styles.label, { color: theme.text }]}>
-          Full name
-        </Text>
+        <Text style={[styles.label, { color: theme.text }]}>Full name</Text>
 
         <TextInput
           style={[
@@ -164,9 +134,7 @@ function FormScreen({ onNavigate }) {
           returnKeyType="next"
         />
 
-        <Text style={[styles.label, { color: theme.text }]}>
-          Uniqname
-        </Text>
+        <Text style={[styles.label, { color: theme.text }]}>Uniqname</Text>
 
         <TextInput
           style={[
@@ -187,14 +155,7 @@ function FormScreen({ onNavigate }) {
       </View>
 
       {/* Save input example */}
-      <View
-        style={[
-          styles.card,
-          { backgroundColor: theme.surface },
-        ]}
-      >
-
-
+      <View style={[styles.card, { backgroundColor: theme.surface }]}>
         <Text style={[styles.label, { color: theme.text }]}>
           What do you want to talk about?
         </Text>
@@ -230,12 +191,7 @@ function FormScreen({ onNavigate }) {
           accessibilityLabel="Save the current draft"
           accessibilityState={{ disabled: !draft.trim() }}
         >
-          <Text
-            style={[
-              styles.buttonText,
-              { color: theme.buttonText },
-            ]}
-          >
+          <Text style={[styles.buttonText, { color: theme.buttonText }]}>
             Save
           </Text>
         </TouchableOpacity>
@@ -253,12 +209,7 @@ function FormScreen({ onNavigate }) {
             Saved value
           </Text>
 
-          <Text
-            style={[
-              styles.savedText,
-              { color: theme.secondaryText },
-            ]}
-          >
+          <Text style={[styles.savedText, { color: theme.secondaryText }]}>
             {savedContents || "Nothing has been saved yet."}
           </Text>
         </View>
@@ -274,11 +225,12 @@ function FormScreen({ onNavigate }) {
           Clear all fields
         </Text>
       </TouchableOpacity>
-    </ScrollView>)
+    </ScrollView>
+  );
 }
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState("form");
+  const [currentScreen, setCurrentScreen] = useState("success");
   function navigate(screenName) {
     setCurrentScreen(screenName);
   }
@@ -316,9 +268,6 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
   container: {
     flexGrow: 1,
     padding: 20,
@@ -334,10 +283,6 @@ const styles = StyleSheet.create({
   titleContainer: {
     flex: 1,
     marginRight: 16,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "700",
   },
   subtitle: {
     marginTop: 4,
@@ -396,10 +341,6 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     opacity: 0.4,
-  },
-  buttonText: {
-    fontSize: 17,
-    fontWeight: "700",
   },
   savedBox: {
     minHeight: 80,
@@ -565,3 +506,4 @@ function AppButton({ title, onPress, secondary = false }) {
     </Pressable>
   );
 }
+
