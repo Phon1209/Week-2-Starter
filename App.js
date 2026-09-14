@@ -55,26 +55,17 @@ function SuccessScreen() {
   );
 }
 
-function FormScreen({ onNavigate }) {
-  // Each call to useState creates one piece of component state.
+function FormScreen({ onNavigate })
+{
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [draft, setDraft] = useState("");
-  const [savedContents, setSavedContents] = useState("");
 
   const theme = isDarkMode ? colors.dark : colors.light;
 
-  // An event handler can be defined separately from the JSX.
   const handleSave = () => {
-    setSavedContents(draft);
-  };
-
-  const handleClear = () => {
-    setFirstName("");
-    setLastName("");
-    setDraft("");
-    setSavedContents("");
+    // Add your save logic here
   };
 
   const fullName = `${firstName} ${lastName}`.trim();
@@ -92,7 +83,6 @@ function FormScreen({ onNavigate }) {
         <View style={styles.titleContainer}>
           <Text style={[styles.title, { color: theme.text }]}>
             Contact Us
-            
           </Text>
 
           <Text
@@ -115,9 +105,9 @@ function FormScreen({ onNavigate }) {
             onValueChange={setIsDarkMode}
             trackColor={{
               false: "#767577",
-              true: "#light-blue",
+              true: "#87CEFA",
             }}
-            thumbColor={isDarkMode ? "#blue" : "#light-blue"}
+            thumbColor={isDarkMode ? "#0000FF" : "#87CEFA"}
             accessibilityLabel="Toggle dark mode"
           />
         </View>
@@ -186,15 +176,13 @@ function FormScreen({ onNavigate }) {
         />
       </View>
 
-      {/* Save input example */}
+      {/* Inquiry input */}
       <View
         style={[
           styles.card,
           { backgroundColor: theme.surface },
         ]}
       >
-
-
         <Text style={[styles.label, { color: theme.text }]}>
           What do you want to talk about?
         </Text>
@@ -239,79 +227,8 @@ function FormScreen({ onNavigate }) {
             Save
           </Text>
         </TouchableOpacity>
-
-        <View
-          style={[
-            styles.savedBox,
-            {
-              backgroundColor: theme.inputBackground,
-              borderColor: theme.border,
-            },
-          ]}
-        >
-          <Text style={[styles.savedLabel, { color: theme.text }]}>
-            Saved value
-          </Text>
-
-          <Text
-            style={[
-              styles.savedText,
-              { color: theme.secondaryText },
-            ]}
-          >
-            {savedContents || "Nothing has been saved yet."}
-          </Text>
-        </View>
       </View>
-
-      <TouchableOpacity
-        style={[styles.clearButton, { borderColor: theme.accent }]}
-        onPress={handleClear}
-        activeOpacity={0.65}
-        accessibilityRole="button"
-      >
-        <Text style={[styles.clearButtonText, { color: theme.accent }]}>
-          Clear all fields
-        </Text>
-      </TouchableOpacity>
-    </ScrollView>)
-}
-
-export default function App() {
-  const [currentScreen, setCurrentScreen] = useState("form");
-  function navigate(screenName) {
-    setCurrentScreen(screenName);
-  }
-
-  // Render one screen based on the current state.
-  function renderScreen() {
-    if (currentScreen === "form") {
-      return <FormScreen onNavigate={() => navigate("success")} />;
-    }
-
-    if (currentScreen === "success") {
-      return <SuccessScreen onNavigate={() => navigate("form")} />;
-    }
-
-    // Fallback in case currentScreen contains an unexpected value.
-    return <NotFoundScreen onNavigate={() => navigate("home")} />;
-  }
-
-  return (
-    <View style={styles.container}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="transparent"
-        translucent
-      />
-
-      <SafeAreaView
-        style={styles.safeArea}
-        edges={["top", "right", "bottom", "left"]}
-      >
-        {renderScreen()}
-      </SafeAreaView>
-    </View>
+    </ScrollView>
   );
 }
 
