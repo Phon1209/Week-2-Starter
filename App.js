@@ -13,7 +13,6 @@ import { StatusBar } from "expo-status-bar";
 import {
   SafeAreaProvider,
   SafeAreaView,
-  useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
 const colors = {
@@ -43,35 +42,28 @@ const colors = {
   },
 };
 
-function SuccessScreen() {
+function SuccessScreen({ onNavigate }) {
   return (
-    <View>
-      <Text>Success!</Text>
-      <Text>Your message has been sent</Text>
+    <View style={styles.successScreen}>
+      <View style={styles.successCard}>
+        <Text style={styles.successTitle}>Success!</Text>
+        <Text style={styles.successMessage}>Your message has been sent.</Text>
+        <AppButton title="Send another message" onPress={onNavigate} />
+      </View>
     </View>
   );
 }
 
 function FormScreen({ onNavigate }) {
-  // Each call to useState creates one piece of component state.
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [draft, setDraft] = useState("");
-  const [savedContents, setSavedContents] = useState("");
 
   const theme = isDarkMode ? colors.dark : colors.light;
 
-  // An event handler can be defined separately from the JSX.
   const handleSave = () => {
-    setSavedContents(draft);
-  };
-
-  const handleClear = () => {
-    setFirstName("");
-    setLastName("");
-    setDraft("");
-    setSavedContents("");
+    // Add your save logic here
   };
 
   const fullName = `${firstName} ${lastName}`.trim();
@@ -85,33 +77,27 @@ function FormScreen({ onNavigate }) {
       <View style={styles.titleRow}>
         <View style={styles.titleContainer}>
           <Text style={[styles.title, { color: theme.text }]}>Contact Us</Text>
-
           <Text style={[styles.subtitle, { color: theme.secondaryText }]}>
             Please enter personal information and inquiry about a subject.
           </Text>
         </View>
-
         <View style={styles.switchContainer}>
-          <Text style={[styles.switchLabel, { color: theme.text }]}>
+          <Text style={[styles.switchLabel, { color: theme.secondaryText }]}>
             Dark mode
           </Text>
-
           <Switch
             value={isDarkMode}
             onValueChange={setIsDarkMode}
-            trackColor={{
-              false: "#767577",
-              true: "#light-blue",
-            }}
-            thumbColor={isDarkMode ? "#blue" : "#light-blue"}
+            trackColor={{ false: "#767577", true: theme.accent }}
+            thumbColor={isDarkMode ? "#FFFFFF" : "#F4F4F4"}
             accessibilityLabel="Toggle dark mode"
           />
         </View>
       </View>
 
       {/* Name input example */}
-      <View style={[styles.card, { backgroundColor: theme.surface }]}>
-        <Text style={[styles.description, { color: theme.secondaryText }]}>
+      <View style={[styles.card, { backgroundColor: theme.surface, elevation: 2 }]}>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>
           Please enter Name and Uniqname
         </Text>
 
@@ -121,9 +107,9 @@ function FormScreen({ onNavigate }) {
           style={[
             styles.input,
             {
-              color: theme.text,
               backgroundColor: theme.inputBackground,
               borderColor: theme.border,
+              color: theme.text,
             },
           ]}
           value={firstName}
@@ -140,9 +126,9 @@ function FormScreen({ onNavigate }) {
           style={[
             styles.input,
             {
-              color: theme.text,
               backgroundColor: theme.inputBackground,
               borderColor: theme.border,
+              color: theme.text,
             },
           ]}
           value={lastName}
@@ -154,9 +140,9 @@ function FormScreen({ onNavigate }) {
         />
       </View>
 
-      {/* Save input example */}
-      <View style={[styles.card, { backgroundColor: theme.surface }]}>
-        <Text style={[styles.label, { color: theme.text }]}>
+      {/* Inquiry input */}
+      <View style={[styles.card, { backgroundColor: theme.surface, elevation: 2 }]}>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>
           What do you want to talk about?
         </Text>
 
@@ -165,9 +151,9 @@ function FormScreen({ onNavigate }) {
             styles.input,
             styles.multilineInput,
             {
-              color: theme.text,
               backgroundColor: theme.inputBackground,
               borderColor: theme.border,
+              color: theme.text,
             },
           ]}
           value={draft}
@@ -177,52 +163,16 @@ function FormScreen({ onNavigate }) {
           multiline
           textAlignVertical="top"
         />
-
-        <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: theme.button },
-            !draft.trim() && styles.disabledButton,
-          ]}
-          onPress={handleSave}
-          disabled={!draft.trim()}
-          activeOpacity={0.65}
-          accessibilityRole="button"
-          accessibilityLabel="Save the current draft"
-          accessibilityState={{ disabled: !draft.trim() }}
-        >
-          <Text style={[styles.buttonText, { color: theme.buttonText }]}>
-            Save
-          </Text>
-        </TouchableOpacity>
-
-        <View
-          style={[
-            styles.savedBox,
-            {
-              backgroundColor: theme.inputBackground,
-              borderColor: theme.border,
-            },
-          ]}
-        >
-          <Text style={[styles.savedLabel, { color: theme.text }]}>
-            Saved value
-          </Text>
-
-          <Text style={[styles.savedText, { color: theme.secondaryText }]}>
-            {savedContents || "Nothing has been saved yet."}
-          </Text>
-        </View>
       </View>
 
       <TouchableOpacity
-        style={[styles.clearButton, { borderColor: theme.accent }]}
-        onPress={handleClear}
+        style={[styles.button, { backgroundColor: theme.button }]}
+        onPress={onNavigate}
         activeOpacity={0.65}
         accessibilityRole="button"
       >
-        <Text style={[styles.clearButtonText, { color: theme.accent }]}>
-          Clear all fields
+        <Text style={[styles.buttonText, { color: theme.buttonText }]}>
+          Send Message
         </Text>
       </TouchableOpacity>
     </ScrollView>
@@ -230,7 +180,7 @@ function FormScreen({ onNavigate }) {
 }
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState("success");
+  const [currentScreen, setCurrentScreen] = useState("form");
   function navigate(screenName) {
     setCurrentScreen(screenName);
   }
@@ -250,7 +200,8 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaProvider>
+      <View style={styles.screen}>
       <StatusBar
         barStyle="light-content"
         backgroundColor="transparent"
@@ -263,11 +214,18 @@ export default function App() {
       >
         {renderScreen()}
       </SafeAreaView>
-    </View>
+      </View>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
     padding: 20,
@@ -284,9 +242,14 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 16,
   },
+  title: {
+    fontSize: 26,
+    fontWeight: "700",
+  },
   subtitle: {
     marginTop: 4,
     fontSize: 15,
+    lineHeight: 21,
   },
   switchContainer: {
     alignItems: "center",
@@ -302,18 +265,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   sectionTitle: {
+    marginBottom: 18,
     fontSize: 20,
-    fontWeight: "700",
-  },
-  description: {
-    marginTop: 6,
-    marginBottom: 18,
-    fontSize: 15,
-    lineHeight: 21,
-  },
-  greeting: {
-    marginBottom: 18,
-    fontSize: 24,
     fontWeight: "700",
   },
   label: {
@@ -338,151 +291,46 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 8,
-  },
-  disabledButton: {
-    opacity: 0.4,
-  },
-  savedBox: {
-    minHeight: 80,
-    marginTop: 18,
-    padding: 14,
-    borderWidth: 1,
-    borderRadius: 8,
-  },
-  savedLabel: {
-    marginBottom: 6,
-    fontWeight: "700",
-  },
-  savedText: {
-    fontSize: 16,
-    lineHeight: 22,
-  },
-  clearButton: {
-    minHeight: 48,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 2,
-    borderRadius: 8,
-  },
-  clearButtonText: {
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  app: {
-    flex: 1,
-    backgroundColor: "#f5f7fa",
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: "#00274c",
-  },
-  headerTitle: {
-    color: "#ffffff",
-    fontSize: 20,
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  content: {
-    flex: 1,
-  },
-  screen: {
-    flex: 1,
-    padding: 24,
-  },
-  title: {
-    color: "#00274c",
-    fontSize: 32,
-    fontWeight: "700",
-    marginBottom: 16,
-  },
-  body: {
-    color: "#333333",
-    fontSize: 17,
-    lineHeight: 25,
-    marginBottom: 24,
-  },
-  label: {
-    color: "#333333",
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 8,
-  },
-  input: {
-    backgroundColor: "#ffffff",
-    borderColor: "#8a8a8a",
-    borderWidth: 1,
-    borderRadius: 8,
-    fontSize: 17,
-    padding: 12,
-    marginBottom: 18,
-  },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#00274c",
-    borderRadius: 8,
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-    marginBottom: 12,
-  },
-  secondaryButton: {
-    backgroundColor: "#ffcb05",
-  },
-  buttonPressed: {
-    opacity: 0.7,
+    elevation: 3,
   },
   buttonText: {
-    color: "#ffffff",
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: "700",
   },
-  secondaryButtonText: {
-    color: "#00274c",
+  pressedButton: {
+    opacity: 0.85,
   },
-  codeBox: {
-    backgroundColor: "#e6e9ed",
-    borderRadius: 8,
-    padding: 14,
-    marginBottom: 24,
-  },
-  code: {
-    color: "#222222",
-    fontFamily: "monospace",
-    fontSize: 14,
-  },
-  tabBar: {
-    flexDirection: "row",
-    backgroundColor: "#ffffff",
-    borderTopColor: "#cccccc",
-    borderTopWidth: 1,
-  },
-  tabButton: {
+  successScreen: {
     flex: 1,
-    alignItems: "center",
-    paddingVertical: 16,
+    justifyContent: "center",
+    padding: 20,
+    backgroundColor: colors.light.background,
   },
-  activeTabButton: {
-    backgroundColor: "#ffcb05",
+  successCard: {
+    padding: 24,
+    borderRadius: 12,
+    backgroundColor: colors.light.surface,
+    elevation: 3,
   },
-  tabButtonPressed: {
-    opacity: 0.6,
+  successTitle: {
+    marginBottom: 6,
+    fontSize: 26,
+    fontWeight: "700",
+    color: colors.light.text,
   },
-  tabText: {
-    color: "#555555",
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  activeTabText: {
-    color: "#00274c",
-    fontWeight: "800",
+  successMessage: {
+    marginBottom: 24,
+    fontSize: 16,
+    lineHeight: 22,
+    color: colors.light.secondaryText,
   },
 });
 
 function NotFoundScreen({ onNavigate }) {
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Screen Not Found</Text>
-      <Text style={styles.body}>The requested screen does not exist.</Text>
+    <View>
+      <Text>Screen Not Found</Text>
+      <Text>The requested screen does not exist.</Text>
       <AppButton title="Go Home" onPress={onNavigate} />
     </View>
   );
@@ -491,19 +339,17 @@ function NotFoundScreen({ onNavigate }) {
 function AppButton({ title, onPress, secondary = false }) {
   return (
     <Pressable
-      onPress={onPress}
       style={({ pressed }) => [
         styles.button,
-        secondary && styles.secondaryButton,
-        pressed && styles.buttonPressed,
+        { backgroundColor: secondary ? colors.light.surface : colors.light.button },
+        pressed && styles.pressedButton,
       ]}
+      android_ripple={{ color: "#FFFFFF33" }}
+      onPress={onPress}
     >
-      <Text
-        style={[styles.buttonText, secondary && styles.secondaryButtonText]}
-      >
+      <Text style={[styles.buttonText, { color: colors.light.buttonText }]}>
         {title}
       </Text>
     </Pressable>
   );
 }
-
