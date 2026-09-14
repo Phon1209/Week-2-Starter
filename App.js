@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Pressable } from "react-native";
 import { useState } from "react";
 
 function SuccessScreen() {
@@ -11,16 +11,17 @@ function SuccessScreen() {
   );
 }
 
-function FormScreen() {
+function FormScreen({ onNavigate }) {
   return (
     <View>
       <Text>Form Screen</Text>
+      <AppButton title="Go Home" onPress={onNavigate} />
     </View>
   );
 }
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState < PAGES > "form";
+  const [currentScreen, setCurrentScreen] = useState("form");
   function navigate(screenName) {
     setCurrentScreen(screenName);
   }
@@ -28,18 +29,18 @@ export default function App() {
   // Render one screen based on the current state.
   function renderScreen() {
     if (currentScreen === "form") {
-      return <FormScreen onNavigate={navigate} />;
+      return <FormScreen onNavigate={() => navigate("success")} />;
     }
 
     if (currentScreen === "success") {
-      return <SuccessScreen onNavigate={navigate} />;
+      return <SuccessScreen onNavigate={() => navigate("form")} />;
     }
 
     // Fallback in case currentScreen contains an unexpected value.
     return <NotFoundScreen onNavigate={() => navigate("home")} />;
   }
 
-  return <View style={styles.container}></View>;
+  return <View style={styles.container}>{renderScreen()}</View>;
 }
 
 const styles = StyleSheet.create({
@@ -160,5 +161,24 @@ function NotFoundScreen({ onNavigate }) {
       <Text style={styles.body}>The requested screen does not exist.</Text>
       <AppButton title="Go Home" onPress={onNavigate} />
     </View>
+  );
+}
+
+function AppButton({ title, onPress, secondary = false }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.button,
+        secondary && styles.secondaryButton,
+        pressed && styles.buttonPressed,
+      ]}
+    >
+      <Text
+        style={[styles.buttonText, secondary && styles.secondaryButtonText]}
+      >
+        {title}
+      </Text>
+    </Pressable>
   );
 }
