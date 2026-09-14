@@ -1,6 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import { useState } from "react";
+import {
+  SafeAreaProvider,
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 function SuccessScreen() {
   return (
@@ -40,7 +45,22 @@ export default function App() {
     return <NotFoundScreen onNavigate={() => navigate("home")} />;
   }
 
-  return <View style={styles.container}>{renderScreen()}</View>;
+  return (
+    <View style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
+
+      <SafeAreaView
+        style={styles.safeArea}
+        edges={["top", "right", "bottom", "left"]}
+      >
+        {renderScreen()}
+      </SafeAreaView>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
